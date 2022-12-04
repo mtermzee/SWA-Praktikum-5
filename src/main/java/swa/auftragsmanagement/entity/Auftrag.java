@@ -1,19 +1,31 @@
 package swa.auftragsmanagement.entity;
 
+import java.sql.Date;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "Orders")
 public class Auftrag {
+    @Id
+    @SequenceGenerator(name = "orderSeq", sequenceName = "order_id_seq", allocationSize = 1, initialValue = 1)
+    @GeneratedValue(generator = "orderSeq")
     private int id;
     private String description;
-    private String receiptDate;
+    private Date receiptDate;
     private String url;
 
     public Auftrag() {
 
     }
 
-    public Auftrag(int id, String description, String receiptDate, String url) {
-        this.id = id;
+    public Auftrag(String description, String url) {
         this.description = description;
-        this.receiptDate = receiptDate;
+        this.receiptDate = new Date(System.currentTimeMillis());
         this.url = url;
     }
 
@@ -33,11 +45,11 @@ public class Auftrag {
         this.description = description;
     }
 
-    public String getReceiptDate() {
+    public Date getReceiptDate() {
         return receiptDate;
     }
 
-    public void setReceiptDate(String receiptDate) {
+    public void setReceiptDate(Date receiptDate) {
         this.receiptDate = receiptDate;
     }
 

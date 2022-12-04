@@ -37,34 +37,45 @@ public class SchiffResource {
     @GET
     public Response getSchiffs() {
         List<Schiff> ships = this.schiffService.getSchiffs();
-        return Response.ok(ships).build();
+        if (!ships.isEmpty())
+            return Response.ok(ships).build();
+        return Response.status(Response.Status.NOT_FOUND).entity("no Ships was found!").type("text/plain").build();
     }
 
     @GET
     @Path("{id}")
     public Response getSchiffByID(@PathParam("id") int id) {
-        return Response.ok(this.schiffService.getSchiff(id)).build();
+        Schiff ship = this.schiffService.getSchiff(id);
+        if (ship != null)
+            return Response.ok(ship).build();
+        return Response.status(Response.Status.NOT_FOUND).entity("no Ship was found!").type("text/plain").build();
     }
 
     @POST
     @Path("{name}")
     public Response addSchiff(@PathParam("name") String name) {
-        this.schiffService.addSchiff(name);
-        return Response.ok().build();
+        Schiff ship = this.schiffService.addSchiff(name);
+        if (ship != null)
+            return Response.ok(ship).build();
+        return Response.status(Response.Status.BAD_REQUEST).entity("Ship was not added!").type("text/plain").build();
     }
 
     @PUT
     @Path("{id}")
     public Response updateSchiff(@PathParam("id") int id, @QueryParam("name") String name) {
-        this.schiffService.updateSchiff(id, name);
-        return Response.ok().build();
+        Schiff ship = this.schiffService.updateSchiff(id, name);
+        if (ship != null)
+            return Response.ok(ship).build();
+        return Response.status(Response.Status.BAD_REQUEST).entity("Ship was not updated!").type("text/plain").build();
     }
 
     @DELETE
     @Path("{id}")
     public Response deleteSchiff(@PathParam("id") int id) {
-        this.schiffService.removeSchiff(id);
-        return Response.ok().build();
+        Schiff ship = this.schiffService.removeSchiff(id);
+        if (ship != null)
+            return Response.ok(ship).build();
+        return Response.status(Response.Status.BAD_REQUEST).entity("Ship was not removed!").type("text/plain").build();
     }
 
 }

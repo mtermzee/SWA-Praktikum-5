@@ -37,34 +37,45 @@ public class AuftragResource {
     @GET
     public Response getAuftrags() {
         List<Auftrag> orders = this.auftragService.getAuftrags();
-        return Response.ok(orders).build();
+        if (!orders.isEmpty())
+            return Response.ok(orders).build();
+        return Response.status(Response.Status.NOT_FOUND).entity("no Orders was found!").type("text/plain").build();
     }
 
     @GET
     @Path("{id}")
     public Response getAuftragByID(@PathParam("id") int id) {
         Auftrag order = this.auftragService.getAuftragByID(id);
-        return Response.ok(order).build();
+        if (order != null)
+            return Response.ok(order).build();
+        return Response.status(Response.Status.NOT_FOUND).entity("no Order was found!").type("text/plain").build();
     }
 
     @POST
     @Path("{description}")
     public Response addAuftrag(@PathParam("description") String description) {
-        this.auftragService.addAuftrag(description);
-        return Response.ok().build();
+        Auftrag order = this.auftragService.addAuftrag(description);
+        if (order != null)
+            return Response.ok(order).build();
+        return Response.status(Response.Status.BAD_REQUEST).entity("Order was not added!").type("text/plain").build();
     }
 
     @PUT
     @Path("{id}")
     public Response updateAuftrag(@PathParam("id") int id, @QueryParam("description") String description) {
-        this.auftragService.updateAuftrag(id, description);
-        return Response.ok().build();
+        Auftrag order = this.auftragService.updateAuftrag(id, description);
+        if (order != null)
+            return Response.ok(order).build();
+        return Response.status(Response.Status.BAD_REQUEST).entity("Order was not updated!").type("text/plain").build();
     }
 
     @DELETE
     @Path("{id}")
     public Response deleteAuftrag(@PathParam("id") int id) {
-        this.auftragService.deleteAuftrag(id);
-        return Response.ok().build();
+        Auftrag order = this.auftragService.deleteAuftrag(id);
+        if (order != null)
+            return Response.ok(order).build();
+        return Response.status(Response.Status.BAD_REQUEST).entity("Order was not removed!").type("text/plain").build();
+
     }
 }

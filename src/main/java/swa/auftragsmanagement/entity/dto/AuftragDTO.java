@@ -1,11 +1,13 @@
 package swa.auftragsmanagement.entity.dto;
 
+import java.sql.Date;
+
 import swa.auftragsmanagement.entity.Auftrag;
 
 public class AuftragDTO {
     private int id;
     private String description;
-    private String receiptDate;
+    private Date receiptDate;
     private String url;
 
     public AuftragDTO() {
@@ -26,7 +28,7 @@ public class AuftragDTO {
         return description;
     }
 
-    public String getReceiptDate() {
+    public Date getReceiptDate() {
         return receiptDate;
     }
 

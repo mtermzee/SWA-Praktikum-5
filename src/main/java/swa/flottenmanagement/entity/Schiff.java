@@ -1,6 +1,17 @@
 package swa.flottenmanagement.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "Ships")
 public class Schiff {
+    @Id
+    @SequenceGenerator(name = "shipSeq", sequenceName = "ship_id_seq", allocationSize = 1, initialValue = 1)
+    @GeneratedValue(generator = "shipSeq")
     private int id;
     private String name;
     private boolean isFree;
@@ -9,8 +20,7 @@ public class Schiff {
 
     }
 
-    public Schiff(int id, String name, boolean isFree) {
-        this.id = id;
+    public Schiff(String name, boolean isFree) {
         this.name = name;
         this.isFree = isFree;
     }

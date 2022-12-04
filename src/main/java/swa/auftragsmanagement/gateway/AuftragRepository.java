@@ -1,57 +1,61 @@
 package swa.auftragsmanagement.gateway;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 
 import swa.auftragsmanagement.entity.Auftrag;
 import swa.auftragsmanagement.entity.AuftragManagement;
 
 @ApplicationScoped
 public class AuftragRepository implements AuftragManagement {
-    Map<Integer, Auftrag> orders = new HashMap<>();
-    int nextAvailabaleID = 0;
+    @Inject
+    EntityManager em;
 
     @Override
+    @Transactional
     public Auftrag getAuftragByID(int id) {
-        if (orders.containsKey(id))
-            return orders.get(id);
-        return null;
+        return em.find(Auftrag.class, id);
     }
 
     @Override
+    @Transactional
     public List<Auftrag> getAuftrags() {
-        System.out.println(List.copyOf(orders.values()));
-        return List.copyOf(orders.values());
+        return em.createQuery("SELECT a FROM Auftrag a", Auftrag.class).getResultList();
     }
 
     @Override
+    @Transactional
     public Auftrag addAuftrag(String description) {
         if (description != "") {
-            Auftrag order = new Auftrag(nextAvailabaleID++, description, "data", "Schiff");
-            orders.put(order.getId(), order);
+            Auftrag order = new Auftrag(description, "Schiff");
+            em.persist(order);
             return order;
         }
         return null;
     }
 
     @Override
+    @Transactional
     public Auftrag updateAuftrag(int id, String description) {
-        if (orders.containsKey(id)) {
-            Auftrag order = orders.get(id);
+        Auftrag order = em.find(Auftrag.class, id);
+        if (order != null) {
             order.setDescription(description);
+            em.merge(order);
             return order;
         }
         return null;
     }
 
     @Override
+    @Transactional
     public Auftrag deleteAuftrag(int id) {
-        if (orders.containsKey(id)) {
-            Auftrag order = orders.get(id);
-            orders.remove(id);
+        Auftrag order = em.find(Auftrag.class, id);
+        if (order != null) {
+            em.remove(order);
             return order;
         }
         return null;
