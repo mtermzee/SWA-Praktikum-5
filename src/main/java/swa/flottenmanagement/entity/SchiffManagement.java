@@ -14,4 +14,7 @@ public interface SchiffManagement {
 
     public Schiff updateSchiff(int id, String name);
 
+    public List<Schiff> findAvailableSchiffs();
+
+    public void setShipAvailability(int shipId, boolean isAvailable);
 }

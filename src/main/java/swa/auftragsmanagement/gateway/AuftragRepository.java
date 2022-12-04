@@ -30,7 +30,7 @@ public class AuftragRepository implements AuftragManagement {
     @Override
     public Auftrag addAuftrag(String description) {
         if (description != "") {
-            Auftrag order = new Auftrag(nextAvailabaleID++, description, "data", "Schiff");
+            Auftrag order = new Auftrag(nextAvailabaleID++, description, "data", "");
             orders.put(order.getId(), order);
             return order;
         }

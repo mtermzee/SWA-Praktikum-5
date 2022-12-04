@@ -1,5 +1,6 @@
 package swa.flottenmanagement.gateway;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +55,26 @@ public class SchiffRepository implements SchiffManagement {
             return ship;
         }
         return null;
+    }
+
+    @Override
+    public List<Schiff> findAvailableSchiffs() {
+        // TODO Auto-generated method stub
+
+        //onlyLocal
+        List<Schiff> availableShips = new ArrayList<>();
+        for(Schiff ship : ships.values())
+        {
+            if (ship.isFree())
+                availableShips.add(ship);
+        }
+
+        return availableShips;
+    }
+
+    @Override
+    public void setShipAvailability(int shipId, boolean isAvailable) {
+        ships.get(shipId).setFree(isAvailable);
     }
 
 }
