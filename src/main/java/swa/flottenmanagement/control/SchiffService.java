@@ -13,6 +13,7 @@ import swa.auftragsmanagement.events.DeleteAuftrag;
 import swa.flottenmanagement.entity.Schiff;
 import swa.flottenmanagement.entity.SchiffManagement;
 import swa.flottenmanagement.events.AuftragAngenommen;
+import swa.flottenmanagement.events.SchiffBefreien;
 
 @ApplicationScoped
 public class SchiffService {
@@ -21,6 +22,9 @@ public class SchiffService {
 
     @Inject
     Event<AuftragAngenommen> orderAcceptedEvent;
+
+    @Inject
+    Event<SchiffBefreien> availableShipEvent;
 
     public Schiff getSchiff(int id) {
         return schiffManagement.getSchiff(id);
@@ -31,7 +35,9 @@ public class SchiffService {
     }
 
     public Schiff addSchiff(String name) {
-        return schiffManagement.addSchiff(name);
+        Schiff schiff = schiffManagement.addSchiff(name);
+        availableShipEvent.fire(new SchiffBefreien(buildShipURL(schiff.getId())));
+        return schiff;
     }
 
     public Schiff removeSchiff(int id) {
@@ -56,10 +62,10 @@ public class SchiffService {
 
     private void freeShip(int shipId) {
         schiffManagement.setShipAvailability(shipId, true);
+        availableShipEvent.fire(new SchiffBefreien(buildShipURL(shipId)));
     }
 
     // Events
-
     private void OrderAdded(@Observes AddAuftrag orderPlaced) {
         Optional<Schiff> freeShip = findAvailableShip();
 

@@ -73,4 +73,9 @@ public class AuftragRepository implements AuftragManagement {
         return null;
     }
 
+    @Override
+    public List<Auftrag> getOrdersWithoutShip() {
+        return em.createQuery("SELECT a FROM Auftrag a WHERE a.url IS NULL", Auftrag.class).getResultList();
+    }
+
 }

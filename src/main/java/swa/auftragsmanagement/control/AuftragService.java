@@ -1,6 +1,7 @@
 package swa.auftragsmanagement.control;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -13,6 +14,7 @@ import swa.auftragsmanagement.events.AddAuftrag;
 import swa.auftragsmanagement.events.DeleteAuftrag;
 import swa.auftragsmanagement.events.UpdateAuftrag;
 import swa.flottenmanagement.events.AuftragAngenommen;
+import swa.flottenmanagement.events.SchiffBefreien;
 
 @ApplicationScoped
 public class AuftragService {
@@ -59,8 +61,18 @@ public class AuftragService {
         return Integer.parseInt(urlParts[urlParts.length - 1]);
     }
 
+    public Optional<Auftrag> getFirstOrderWithoutShip() {
+        return auftragManagement.getOrdersWithoutShip().stream().findFirst();
+    }
+
     // Events
     private void OrderAccepted(@Observes AuftragAngenommen orderAccepted) {
         auftragManagement.updateUrl(orderAccepted.getOrderId(), orderAccepted.getShipURL());
+    }
+
+    private void ShipIsFree(@Observes SchiffBefreien availableShip) {
+        getFirstOrderWithoutShip().ifPresent(order -> {
+            orderPlacedEvent.fire(new AddAuftrag(order.getId()));
+        });
     }
 }

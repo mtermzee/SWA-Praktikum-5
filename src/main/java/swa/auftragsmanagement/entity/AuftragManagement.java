@@ -14,4 +14,6 @@ public interface AuftragManagement {
     public Auftrag deleteAuftrag(int id);
 
     public Auftrag updateUrl(int id, String url);
+
+    public List<Auftrag> getOrdersWithoutShip();
 }
