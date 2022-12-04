@@ -12,4 +12,6 @@ public interface AuftragManagement {
     public Auftrag updateAuftrag(int id, String description);
 
     public Auftrag deleteAuftrag(int id);
+
+    public Auftrag updateUrl(int id, String url);
 }

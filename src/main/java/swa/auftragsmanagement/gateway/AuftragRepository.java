@@ -31,7 +31,7 @@ public class AuftragRepository implements AuftragManagement {
     @Transactional
     public Auftrag addAuftrag(String description) {
         if (description != "") {
-            Auftrag order = new Auftrag(description, "Schiff");
+            Auftrag order = new Auftrag(description, null);
             em.persist(order);
             return order;
         }
@@ -56,6 +56,18 @@ public class AuftragRepository implements AuftragManagement {
         Auftrag order = em.find(Auftrag.class, id);
         if (order != null) {
             em.remove(order);
+            return order;
+        }
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public Auftrag updateUrl(int id, String url) {
+        Auftrag order = em.find(Auftrag.class, id);
+        if (order != null) {
+            order.setUrl(url);
+            em.merge(order);
             return order;
         }
         return null;

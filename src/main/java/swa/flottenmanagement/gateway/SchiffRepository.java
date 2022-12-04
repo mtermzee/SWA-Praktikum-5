@@ -61,4 +61,20 @@ public class SchiffRepository implements SchiffManagement {
         return null;
     }
 
+    @Override
+    @Transactional
+    public List<Schiff> findAvailableSchiffs() {
+        return em.createQuery("SELECT s FROM Schiff s WHERE s.isFree = true", Schiff.class).getResultList();
+    }
+
+    @Override
+    @Transactional
+    public void setShipAvailability(int shipId, boolean isAvailable) {
+        Schiff ship = em.find(Schiff.class, shipId);
+        if (ship != null) {
+            ship.setFree(isAvailable);
+            em.merge(ship);
+        }
+    }
+
 }
