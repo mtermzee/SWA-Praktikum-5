@@ -1,6 +1,7 @@
 package swa.flottenmanagement.boundry;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -18,6 +19,7 @@ import javax.ws.rs.core.Response;
 
 import swa.flottenmanagement.control.SchiffService;
 import swa.flottenmanagement.entity.Schiff;
+import swa.flottenmanagement.entity.dto.SchiffDTO;
 
 @Path("/ships")
 @Produces(MediaType.APPLICATION_JSON)
@@ -38,7 +40,7 @@ public class SchiffResource {
     public Response getSchiffs() {
         List<Schiff> ships = this.schiffService.getSchiffs();
         if (!ships.isEmpty())
-            return Response.ok(ships).build();
+            return Response.ok(convertToDTO(ships)).build();
         return Response.status(Response.Status.NOT_FOUND).entity("no Ships was found!").type("text/plain").build();
     }
 
@@ -47,7 +49,7 @@ public class SchiffResource {
     public Response getSchiffByID(@PathParam("id") int id) {
         Schiff ship = this.schiffService.getSchiff(id);
         if (ship != null)
-            return Response.ok(ship).build();
+            return Response.ok(convertToDTO(ship)).build();
         return Response.status(Response.Status.NOT_FOUND).entity("no Ship was found!").type("text/plain").build();
     }
 
@@ -56,7 +58,7 @@ public class SchiffResource {
     public Response addSchiff(@PathParam("name") String name) {
         Schiff ship = this.schiffService.addSchiff(name);
         if (ship != null)
-            return Response.ok(ship).build();
+            return Response.ok(convertToDTO(ship)).build();
         return Response.status(Response.Status.BAD_REQUEST).entity("Ship was not added!").type("text/plain").build();
     }
 
@@ -65,7 +67,7 @@ public class SchiffResource {
     public Response updateSchiff(@PathParam("id") int id, @QueryParam("name") String name) {
         Schiff ship = this.schiffService.updateSchiff(id, name);
         if (ship != null)
-            return Response.ok(ship).build();
+            return Response.ok(convertToDTO(ship)).build();
         return Response.status(Response.Status.BAD_REQUEST).entity("Ship was not updated!").type("text/plain").build();
     }
 
@@ -74,8 +76,15 @@ public class SchiffResource {
     public Response deleteSchiff(@PathParam("id") int id) {
         Schiff ship = this.schiffService.removeSchiff(id);
         if (ship != null)
-            return Response.ok(ship).build();
+            return Response.ok(convertToDTO(ship)).build();
         return Response.status(Response.Status.BAD_REQUEST).entity("Ship was not removed!").type("text/plain").build();
     }
 
+    private SchiffDTO convertToDTO(Schiff ship) {
+        return new SchiffDTO(ship);
+    }
+
+    private List<SchiffDTO> convertToDTO(List<Schiff> ships) {
+        return ships.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
 }

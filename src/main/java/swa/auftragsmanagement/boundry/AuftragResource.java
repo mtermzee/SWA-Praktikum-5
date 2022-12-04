@@ -1,6 +1,7 @@
 package swa.auftragsmanagement.boundry;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -18,6 +19,7 @@ import javax.ws.rs.core.Response;
 
 import swa.auftragsmanagement.control.AuftragService;
 import swa.auftragsmanagement.entity.Auftrag;
+import swa.auftragsmanagement.entity.dto.AuftragDTO;
 
 @Path("/orders")
 @Produces(MediaType.APPLICATION_JSON)
@@ -38,7 +40,7 @@ public class AuftragResource {
     public Response getAuftrags() {
         List<Auftrag> orders = this.auftragService.getAuftrags();
         if (!orders.isEmpty())
-            return Response.ok(orders).build();
+            return Response.ok(convertToDTO(orders)).build();
         return Response.status(Response.Status.NOT_FOUND).entity("no Orders was found!").type("text/plain").build();
     }
 
@@ -47,7 +49,7 @@ public class AuftragResource {
     public Response getAuftragByID(@PathParam("id") int id) {
         Auftrag order = this.auftragService.getAuftragByID(id);
         if (order != null)
-            return Response.ok(order).build();
+            return Response.ok(convertToDTO(order)).build();
         return Response.status(Response.Status.NOT_FOUND).entity("no Order was found!").type("text/plain").build();
     }
 
@@ -56,7 +58,7 @@ public class AuftragResource {
     public Response addAuftrag(@PathParam("description") String description) {
         Auftrag order = this.auftragService.addAuftrag(description);
         if (order != null)
-            return Response.ok(order).build();
+            return Response.ok(convertToDTO(order)).build();
         return Response.status(Response.Status.BAD_REQUEST).entity("Order was not added!").type("text/plain").build();
     }
 
@@ -65,7 +67,7 @@ public class AuftragResource {
     public Response updateAuftrag(@PathParam("id") int id, @QueryParam("description") String description) {
         Auftrag order = this.auftragService.updateAuftrag(id, description);
         if (order != null)
-            return Response.ok(order).build();
+            return Response.ok(convertToDTO(order)).build();
         return Response.status(Response.Status.BAD_REQUEST).entity("Order was not updated!").type("text/plain").build();
     }
 
@@ -74,8 +76,15 @@ public class AuftragResource {
     public Response deleteAuftrag(@PathParam("id") int id) {
         Auftrag order = this.auftragService.deleteAuftrag(id);
         if (order != null)
-            return Response.ok(order).build();
+            return Response.ok(convertToDTO(order)).build();
         return Response.status(Response.Status.BAD_REQUEST).entity("Order was not removed!").type("text/plain").build();
+    }
 
+    private AuftragDTO convertToDTO(Auftrag order) {
+        return new AuftragDTO(order);
+    }
+
+    private List<AuftragDTO> convertToDTO(List<Auftrag> orders) {
+        return orders.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 }
